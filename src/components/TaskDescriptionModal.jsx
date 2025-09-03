@@ -1,12 +1,18 @@
 import { useState, useEffect } from 'react'
-import { X, Edit, Calendar, User, AlertTriangle, Settings, Grid, ArrowUp, Link, Image, List, Code, Quote, AtSign, Hash, Bold, Italic, Trash2 } from 'lucide-react'
+import { X, Calendar, User, AlertTriangle, Settings, Grid, ArrowUp, Link, Image, List, Code, Quote, AtSign, Hash, Bold, Italic, Trash2 } from 'lucide-react'
 import { useTodo } from '../hooks/useTodo'
+import { EditButton } from './ui'
 
 const TaskDescriptionModal = ({ todo, onClose, onUpdate }) => {
   const { assignees, updateTodo, addComment, updateComment, deleteComment, closeTodo, reopenTodo } = useTodo()
   const [comment, setComment] = useState('')
-  const [isEditing, setIsEditing] = useState(false)
+  const [isEditingTitle, setIsEditingTitle] = useState(false)
+  const [isEditingDescription, setIsEditingDescription] = useState(false)
   const [editingCommentId, setEditingCommentId] = useState(null)
+  
+  // Local state to track current todo (gets updated when we make changes)
+  const [currentTodo, setCurrentTodo] = useState(todo)
+  
   const [editData, setEditData] = useState({
     title: todo.title,
     description: todo.description,
@@ -14,7 +20,11 @@ const TaskDescriptionModal = ({ todo, onClose, onUpdate }) => {
     assigneeId: todo.assigneeId || ''
   })
 
-  const assignee = assignees.find(a => a.id === todo.assigneeId)
+  // Inline editing states for sidebar fields
+  const [editingAssignee, setEditingAssignee] = useState(false)
+  const [editingPriority, setEditingPriority] = useState(false)
+  const [editingStatus, setEditingStatus] = useState(false)
+
   const priorityColors = {
     low: '#28a745',
     medium: '#f6a434',
@@ -28,20 +38,42 @@ const TaskDescriptionModal = ({ todo, onClose, onUpdate }) => {
     }
   }, [todo.defaultStatus])
 
-  const handleSave = () => {
-    updateTodo(todo.id, editData)
-    setIsEditing(false)
-    if (onUpdate) onUpdate()
+  // Handle escape key to exit editing modes
+  useEffect(() => {
+    const handleEscape = (e) => {
+      if (e.key === 'Escape') {
+        setIsEditingTitle(false)
+        setIsEditingDescription(false)
+        setEditingAssignee(false)
+        setEditingPriority(false)
+        setEditingStatus(false)
+      }
+    }
+
+    document.addEventListener('keydown', handleEscape)
+    return () => document.removeEventListener('keydown', handleEscape)
+  }, [])
+
+  const handleTitleSave = () => {
+    updateTodo(todo.id, { title: editData.title })
+    setCurrentTodo(prev => ({ ...prev, title: editData.title }))
+    setIsEditingTitle(false)
   }
 
-  const handleCancel = () => {
-    setEditData({
-      title: todo.title,
-      description: todo.description,
-      priority: todo.priority || 'medium',
-      assigneeId: todo.assigneeId || ''
-    })
-    setIsEditing(false)
+  const handleTitleCancel = () => {
+    setEditData(prev => ({ ...prev, title: todo.title }))
+    setIsEditingTitle(false)
+  }
+
+  const handleDescriptionSave = () => {
+    updateTodo(todo.id, { description: editData.description })
+    setCurrentTodo(prev => ({ ...prev, description: editData.description }))
+    setIsEditingDescription(false)
+  }
+
+  const handleDescriptionCancel = () => {
+    setEditData(prev => ({ ...prev, description: todo.description }))
+    setIsEditingDescription(false)
   }
 
   const handleCommentSubmit = () => {
@@ -87,13 +119,48 @@ const TaskDescriptionModal = ({ todo, onClose, onUpdate }) => {
     return author ? author.avatar : '👤'
   }
 
+  // Inline editing functions
+  const handleAssigneeEdit = () => {
+    setEditingAssignee(true)
+  }
+
+  const handlePriorityEdit = () => {
+    setEditingPriority(true)
+  }
+
+  const handleStatusEdit = () => {
+    setEditingStatus(true)
+  }
+
+  const handleAssigneeChange = (assigneeId) => {
+    const newAssigneeId = assigneeId ? parseInt(assigneeId) : null
+    updateTodo(todo.id, { assigneeId: newAssigneeId })
+    setCurrentTodo(prev => ({ ...prev, assigneeId: newAssigneeId }))
+    setEditData(prev => ({ ...prev, assigneeId: newAssigneeId }))
+    setEditingAssignee(false)
+  }
+
+  const handlePriorityChange = (priority) => {
+    updateTodo(todo.id, { priority })
+    setCurrentTodo(prev => ({ ...prev, priority }))
+    setEditData(prev => ({ ...prev, priority }))
+    setEditingPriority(false)
+  }
+
+  const handleStatusChange = (status) => {
+    updateTodo(todo.id, { status })
+    setCurrentTodo(prev => ({ ...prev, status }))
+    setEditData(prev => ({ ...prev, status }))
+    setEditingStatus(false)
+  }
+
   return (
     <div className="task-modal-overlay" onClick={onClose}>
       <div className="task-modal-content" onClick={e => e.stopPropagation()}>
         {/* Header */}
         <div className="task-modal-header">
           <div className="task-modal-title">
-            {isEditing ? (
+            {isEditingTitle ? (
               <input
                 type="text"
                 value={editData.title}
@@ -101,23 +168,22 @@ const TaskDescriptionModal = ({ todo, onClose, onUpdate }) => {
                 className="edit-title-input"
               />
             ) : (
-              <h1>{todo.title}</h1>
+              <h1>{currentTodo.title}</h1>
             )}
             <span className="task-number">#{todo.id}</span>
           </div>
           
           <div className="task-modal-actions">
-            {isEditing ? (
+            {isEditingTitle ? (
               <>
-                <button className="btn-secondary" onClick={handleCancel}>Cancel</button>
-                <button className="btn-primary" onClick={handleSave}>Save</button>
+                <button className="btn-secondary" onClick={handleTitleCancel}>Cancel</button>
+                <button className="btn-primary" onClick={handleTitleSave}>Save</button>
               </>
             ) : (
               <>
-                <button className="btn-secondary" onClick={() => setIsEditing(true)}>
-                  <Edit size={16} />
-                  Edit
-                </button>
+                <EditButton onClick={() => setIsEditingTitle(true)} size={16}>
+                  Edit Title
+                </EditButton>
                 <button className="btn-secondary" onClick={onClose}>
                   <X size={16} />
                 </button>
@@ -137,17 +203,39 @@ const TaskDescriptionModal = ({ todo, onClose, onUpdate }) => {
                 <span className="author-action">opened this {formatDate(todo.createdAt)}</span>
               </div>
               
-              {isEditing ? (
-                <textarea
-                  value={editData.description}
-                  onChange={(e) => setEditData(prev => ({ ...prev, description: e.target.value }))}
-                  className="edit-description-input"
-                  placeholder="Add a description..."
-                  rows="4"
-                />
+              <div className="description-header">
+                <h3>Description</h3>
+                {!isEditingDescription && (
+                  <EditButton 
+                    onClick={() => setIsEditingDescription(true)}
+                    className="description-edit-btn"
+                  >
+                    Edit
+                  </EditButton>
+                )}
+              </div>
+              
+              {isEditingDescription ? (
+                <div className="description-edit">
+                  <textarea
+                    value={editData.description}
+                    onChange={(e) => setEditData(prev => ({ ...prev, description: e.target.value }))}
+                    className="edit-description-input"
+                    placeholder="Add a description..."
+                    rows="4"
+                  />
+                  <div className="description-edit-actions">
+                    <button className="btn-secondary" onClick={handleDescriptionCancel}>
+                      Cancel
+                    </button>
+                    <button className="btn-primary" onClick={handleDescriptionSave}>
+                      Save
+                    </button>
+                  </div>
+                </div>
               ) : (
                 <div className="description-text">
-                  {todo.description || 'No description provided.'}
+                  {currentTodo.description || 'No description provided.'}
                 </div>
               )}
             </div>
@@ -186,12 +274,11 @@ const TaskDescriptionModal = ({ todo, onClose, onUpdate }) => {
                         <span className="comment-author">{getAuthorName(comment.authorId)}</span>
                         <span className="comment-date">{formatDate(comment.createdAt)}</span>
                         <div className="comment-actions">
-                          <button 
-                            className="comment-action-btn"
+                          <EditButton 
                             onClick={() => setEditingCommentId(comment.id)}
-                          >
-                            <Edit size={14} />
-                          </button>
+                            size={14}
+                            className="comment-action-btn"
+                          />
                           <button 
                             className="comment-action-btn delete"
                             onClick={() => handleCommentDelete(comment.id)}
@@ -307,34 +394,40 @@ const TaskDescriptionModal = ({ todo, onClose, onUpdate }) => {
               <div className="section-header">
                 <User size={16} />
                 <span>Assignees</span>
-                <button className="settings-btn">
+                <button className="settings-btn" onClick={handleAssigneeEdit}>
                   <Settings size={14} />
                 </button>
               </div>
               <div className="section-content">
-                {isEditing ? (
-                  <select
-                    value={editData.assigneeId}
-                    onChange={(e) => setEditData(prev => ({ ...prev, assigneeId: e.target.value ? parseInt(e.target.value) : null }))}
-                    className="sidebar-select"
-                  >
-                    <option value="">Unassigned</option>
-                    {assignees.map(assignee => (
-                      <option key={assignee.id} value={assignee.id}>
-                        {assignee.avatar} {assignee.name}
-                      </option>
-                    ))}
-                  </select>
+                {editingAssignee ? (
+                  <div className="inline-edit">
+                    <select
+                      value={currentTodo.assigneeId || ''}
+                      onChange={(e) => handleAssigneeChange(e.target.value)}
+                      className="sidebar-select"
+                    >
+                      <option value="">Unassigned</option>
+                      {assignees.map(assignee => (
+                        <option key={assignee.id} value={assignee.id}>
+                          {assignee.avatar} {assignee.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                 ) : (
                   <div className="assignee-info">
-                    {assignee ? (
-                      <>
-                        <span className="avatar">{assignee.avatar}</span>
-                        <span>{assignee.name}</span>
-                      </>
-                    ) : (
-                      <span className="unassigned">No one - Assign yourself</span>
-                    )}
+                    {(() => {
+                      const currentAssigneeId = editData.assigneeId !== undefined ? editData.assigneeId : todo.assigneeId;
+                      const currentAssignee = assignees.find(a => a.id === currentAssigneeId);
+                      return currentAssignee ? (
+                        <>
+                          <span className="avatar">{currentAssignee.avatar}</span>
+                          <span>{currentAssignee.name}</span>
+                        </>
+                      ) : (
+                        <span className="unassigned">No one - Assign yourself</span>
+                      );
+                    })()}
                   </div>
                 )}
               </div>
@@ -345,29 +438,31 @@ const TaskDescriptionModal = ({ todo, onClose, onUpdate }) => {
               <div className="section-header">
                 <AlertTriangle size={16} />
                 <span>Priority</span>
-                <button className="settings-btn">
+                <button className="settings-btn" onClick={handlePriorityEdit}>
                   <Settings size={14} />
                 </button>
               </div>
               <div className="section-content">
-                {isEditing ? (
-                  <select
-                    value={editData.priority}
-                    onChange={(e) => setEditData(prev => ({ ...prev, priority: e.target.value }))}
-                    className="sidebar-select"
-                  >
-                    <option value="low">Low</option>
-                    <option value="medium">Medium</option>
-                    <option value="high">High</option>
-                  </select>
+                {editingPriority ? (
+                  <div className="inline-edit">
+                    <select
+                      value={currentTodo.priority}
+                      onChange={(e) => handlePriorityChange(e.target.value)}
+                      className="sidebar-select"
+                    >
+                      <option value="low">Low</option>
+                      <option value="medium">Medium</option>
+                      <option value="high">High</option>
+                    </select>
+                  </div>
                 ) : (
                   <div className="priority-info">
-                    {todo.priority && (
+                    {(editData.priority || todo.priority) && (
                       <span
                         className="priority-badge"
-                        style={{ backgroundColor: priorityColors[todo.priority] }}
+                        style={{ backgroundColor: priorityColors[editData.priority || todo.priority] }}
                       >
-                        {todo.priority}
+                        {editData.priority || todo.priority}
                       </span>
                     )}
                   </div>
@@ -380,15 +475,33 @@ const TaskDescriptionModal = ({ todo, onClose, onUpdate }) => {
               <div className="section-header">
                 <Grid size={16} />
                 <span>Status</span>
-                <button className="settings-btn">
+                <button className="settings-btn" onClick={handleStatusEdit}>
                   <Settings size={14} />
                 </button>
               </div>
               <div className="section-content">
-                <div className="status-info">
-                  <span className="status-badge">{todo.status.replace('-', ' ')}</span>
-                  <ArrowUp size={14} />
-                </div>
+                {editingStatus ? (
+                  <div className="inline-edit">
+                    <select
+                      value={currentTodo.status}
+                      onChange={(e) => handleStatusChange(e.target.value)}
+                      className="sidebar-select"
+                    >
+                      <option value="no-status">No Status</option>
+                      <option value="backlog">Backlog</option>
+                      <option value="in-design">In Design</option>
+                      <option value="ready-to-estimate">Ready to Estimate</option>
+                      <option value="todo">Todo</option>
+                      <option value="in-progress">In Progress</option>
+                      <option value="closed">Closed</option>
+                    </select>
+                  </div>
+                ) : (
+                  <div className="status-info">
+                    <span className="status-badge">{(editData.status || todo.status).replace('-', ' ')}</span>
+                    <ArrowUp size={14} />
+                  </div>
+                )}
               </div>
             </div>
 

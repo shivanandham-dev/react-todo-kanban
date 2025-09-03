@@ -1,90 +1,64 @@
-class TodoService {
+import { ITodoService } from '../interfaces/ITodoService.js'
+import { StorageService } from './StorageService.js'
+import { STATUS_TYPES } from '../types/index.js'
+
+class TodoService extends ITodoService {
   constructor(storageKey = 'todos') {
-    this.storageKey = storageKey
+    super()
+    this.storageService = new StorageService(storageKey)
   }
 
-  // Load todos from storage
+  // Data persistence methods
   loadTodos() {
-    try {
-      const savedTodos = localStorage.getItem(this.storageKey)
-      return savedTodos ? JSON.parse(savedTodos) : []
-    } catch (error) {
-      console.error('Error loading todos:', error)
-      return []
-    }
+    const todos = this.storageService.load()
+    return todos || []
   }
 
-  // Save todos to storage
   saveTodos(todos) {
-    try {
-      localStorage.setItem(this.storageKey, JSON.stringify(todos))
-      return true
-    } catch (error) {
-      console.error('Error saving todos:', error)
-      return false
-    }
+    return this.storageService.save(todos)
   }
 
-  // Get todos by status
-  getTodosByStatus(todos, status) {
-    return todos.filter(todo => todo.status === status)
-  }
-
-  // Get todo by ID
-  getTodoById(todos, id) {
-    return todos.find(todo => todo.id === id)
-  }
-
-  // Generate unique ID
-  generateId() {
-    return Date.now()
-  }
-
-  // Create new todo
+  // Todo CRUD operations
   createTodo(todoData) {
     return {
       id: this.generateId(),
       createdAt: new Date().toISOString(),
-      status: 'no-status',
+      status: STATUS_TYPES.NO_STATUS,
       comments: [],
       ...todoData
     }
   }
 
-  // Update todo
   updateTodo(todos, id, updates) {
     return todos.map(todo => 
       todo.id === id ? { ...todo, ...updates } : todo
     )
   }
 
-  // Delete todo
   deleteTodo(todos, id) {
     return todos.filter(todo => todo.id !== id)
   }
 
-  // Move todo between statuses
+  // Todo status operations
   moveTodo(todos, id, newStatus) {
     return todos.map(todo => 
       todo.id === id ? { ...todo, status: newStatus } : todo
     )
   }
 
-  // Close todo
   closeTodo(todos, id) {
     return todos.map(todo => 
-      todo.id === id ? { ...todo, status: 'closed', closedAt: new Date().toISOString() } : todo
+      todo.id === id ? { ...todo, status: STATUS_TYPES.CLOSED, closedAt: new Date().toISOString() } : todo
     )
   }
 
-  // Reopen todo
   reopenTodo(todos, id) {
     return todos.map(todo => 
-      todo.id === id ? { ...todo, status: 'no-status', closedAt: null } : todo
+      todo.id === id ? { ...todo, status: STATUS_TYPES.NO_STATUS, closedAt: null } : todo
     )
   }
 
-  // Add comment to todo
+  // Comment operations
   addComment(todos, todoId, comment) {
     const newComment = {
       id: this.generateId(),
@@ -100,7 +74,6 @@ class TodoService {
     )
   }
 
-  // Update comment
   updateComment(todos, todoId, commentId, updates) {
     return todos.map(todo => 
       todo.id === todoId 
@@ -114,7 +87,6 @@ class TodoService {
     )
   }
 
-  // Delete comment
   deleteComment(todos, todoId, commentId) {
     return todos.map(todo => 
       todo.id === todoId 
@@ -124,6 +96,19 @@ class TodoService {
           }
         : todo
     )
+  }
+
+  // Utility methods
+  getTodosByStatus(todos, status) {
+    return todos.filter(todo => todo.status === status)
+  }
+
+  getTodoById(todos, id) {
+    return todos.find(todo => todo.id === id)
+  }
+
+  generateId() {
+    return Date.now()
   }
 }
 

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useTodo } from '../hooks/useTodo'
+import { PRIORITY_OPTIONS, STATUS_OPTIONS } from '../types/index.js'
 import Modal from './ui/Modal'
 import Input from './ui/Input'
 import Select from './ui/Select'
@@ -73,22 +74,6 @@ const TodoFormModal = ({
     onClose()
   }
 
-  const priorityOptions = [
-    { value: 'high', label: 'High' },
-    { value: 'medium', label: 'Medium' },
-    { value: 'low', label: 'Low' }
-  ]
-
-  const statusOptions = [
-    { value: 'no-status', label: 'No Status' },
-    { value: 'backlog', label: 'Backlog' },
-    { value: 'in-design', label: 'In Design' },
-    { value: 'ready-to-estimate', label: 'Ready to Estimate' },
-    { value: 'todo', label: 'Todo' },
-    { value: 'in-progress', label: 'In Progress' },
-    { value: 'closed', label: 'Closed' }
-  ]
-
   const assigneeOptions = [
     { value: '', label: 'Unassigned' },
     ...assignees.map(assignee => ({
@@ -132,7 +117,7 @@ const TodoFormModal = ({
             name="priority"
             value={formData.priority}
             onChange={handleChange}
-            options={priorityOptions}
+            options={PRIORITY_OPTIONS}
           />
 
           <Select
@@ -140,7 +125,7 @@ const TodoFormModal = ({
             name="status"
             value={formData.status}
             onChange={handleChange}
-            options={statusOptions}
+            options={STATUS_OPTIONS}
           />
         </div>
 

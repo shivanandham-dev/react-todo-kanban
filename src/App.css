@@ -30,6 +30,16 @@ main {
   flex-direction: column;
 }
 
+/* Loading state */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  color: var(--color-text-muted);
+  font-size: 16px;
+}
+
 /* Kanban Board */
 .kanban-board {
   background-color: var(--color-bg-secondary);
@@ -1760,4 +1770,63 @@ main {
   .form-actions .btn {
     width: 100%;
   }
+}
+
+.item-row .status-badge {
+  background-color: var(--color-primary-dark);
+}
+
+/* Inline Editing Styles */
+.inline-edit {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.inline-edit .sidebar-select {
+  margin-bottom: 0;
+}
+
+.edit-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.edit-btn:hover {
+  background-color: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
+/* Description Editing Styles */
+.description-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.description-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.description-edit-btn {
+  padding: 6px 12px;
+  font-size: 12px;
+  min-height: auto;
+}
+
+.description-edit {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.description-edit-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
 }

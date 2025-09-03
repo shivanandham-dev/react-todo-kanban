@@ -94,7 +94,6 @@ const TodoCard = ({ todo, onEdit, onViewDetails }) => {
         </div>
 
         <div className="todo-actions">
-          {/* <StatusBadge status={todo.status} size="small" /> */}
           {commentCount > 0 && (
             <div className="comment-count">
               <MessageCircle size={14} />

@@ -2,7 +2,16 @@ import { useTodo } from '../hooks/useTodo'
 import TodoCard from './TodoCard'
 import { Plus } from 'lucide-react'
 
-const KanbanColumn = ({ title, subtitle, color, todos, columnId, onAddItem, onEdit, onViewDetails }) => {
+const KanbanColumn = ({ 
+  title, 
+  subtitle, 
+  color, 
+  todos, 
+  columnId, 
+  onAddItem, 
+  onEdit, 
+  onViewDetails 
+}) => {
   const { moveTodo } = useTodo()
 
   const handleDragOver = (e) => {
@@ -33,24 +42,24 @@ const KanbanColumn = ({ title, subtitle, color, todos, columnId, onAddItem, onEd
         </div>
         <span className="todo-count">{todos.length}</span>
       </div>
-              <div
-          className="column-content"
+      <div
+        className="column-content"
+        onDrop={handleDrop}
+        onDragOver={handleDragOver}
+      >
+        <div 
+          className="todos-container"
           onDrop={handleDrop}
           onDragOver={handleDragOver}
         >
-          <div 
-            className="todos-container"
-            onDrop={handleDrop}
-            onDragOver={handleDragOver}
-          >
-                  {todos.map(todo => (
-          <TodoCard 
-            key={todo.id} 
-            todo={todo} 
-            onEdit={onEdit}
-            onViewDetails={onViewDetails}
-          />
-        ))}
+          {todos.map(todo => (
+            <TodoCard 
+              key={todo.id} 
+              todo={todo} 
+              onEdit={onEdit}
+              onViewDetails={onViewDetails}
+            />
+          ))}
           {todos.length === 0 && (
             <div className="empty-column">
               <p>No items here</p>
