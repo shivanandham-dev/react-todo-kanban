@@ -1,0 +1,88 @@
+/* Theme Configuration - CSS Custom Properties */
+:root {
+  /* Primary Colors */
+  --color-primary: #58a6ff;
+  --color-primary-hover: #2ea043;
+  --color-primary-light: rgba(56, 139, 253, 0.15);
+  --color-primary-lighter: rgba(56, 139, 253, 0.1);
+  --color-primary-dark: #1f6feb;
+  
+  /* Background Colors */
+  --color-bg-primary: #0d1117;
+  --color-bg-secondary: #161b22;
+  --color-bg-tertiary: #21262d;
+  --color-bg-overlay: rgba(0, 0, 0, 0.6);
+  
+  /* Text Colors */
+  --color-text-primary: #f0f6fc;
+  --color-text-secondary: #c9d1d9;
+  --color-text-muted: #8b949e;
+  
+  /* Border Colors */
+  --color-border-primary: #30363d;
+  --color-border-secondary: #21262d;
+  
+  /* Button Colors */
+  --color-btn-primary: #238636;
+  --color-btn-primary-hover: #2ea043;
+  --color-btn-danger: #da3633;
+  --color-btn-danger-hover: #f85149;
+  
+  /* Status Colors */
+  --color-success: #238636;
+  --color-success-hover: #2ea043;
+  --color-danger: #f85149;
+  --color-danger-hover: #da3633;
+  
+  /* Shadow Colors */
+  --color-shadow: rgba(0, 0, 0, 0.4);
+  --color-shadow-light: rgba(0, 0, 0, 0.1);
+  --color-shadow-medium: rgba(0, 0, 0, 0.2);
+  
+  /* Scrollbar Colors */
+  --color-scrollbar: rgba(139, 148, 158, 0.3);
+  --color-scrollbar-hover: rgba(139, 148, 158, 0.6);
+  --color-scrollbar-light: rgba(139, 148, 158, 0.2);
+  --color-scrollbar-light-hover: rgba(139, 148, 158, 0.5);
+  
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 12px;
+  --spacing-lg: 16px;
+  --spacing-xl: 20px;
+  --spacing-2xl: 24px;
+  --spacing-3xl: 32px;
+  
+  /* Border Radius */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  
+  /* Font Sizes */
+  --font-size-xs: 10px;
+  --font-size-sm: 11px;
+  --font-size-base: 12px;
+  --font-size-md: 13px;
+  --font-size-lg: 14px;
+  --font-size-xl: 16px;
+  --font-size-2xl: 18px;
+  --font-size-3xl: 20px;
+  --font-size-4xl: 24px;
+  
+  /* Font Weights */
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  
+  /* Transitions */
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.2s ease;
+  --transition-slow: 0.3s ease;
+  
+  /* Z-Index */
+  --z-dropdown: 9999;
+  --z-modal: 1000;
+  --z-tooltip: 100;
+}
