@@ -1,10 +1,19 @@
 import { useState, useEffect } from 'react'
 import { X, Calendar, User, AlertTriangle, Settings, Grid, ArrowUp, Link, Image, List, Code, Quote, AtSign, Hash, Bold, Italic, Trash2 } from 'lucide-react'
-import { useTodo } from '../hooks/useTodo'
 import { EditButton } from './ui'
 
-const TaskDescriptionModal = ({ todo, onClose, onUpdate }) => {
-  const { assignees, updateTodo, addComment, updateComment, deleteComment, closeTodo, reopenTodo } = useTodo()
+const TaskDescriptionModal = ({ 
+  todo, 
+  onClose, 
+  onUpdate, 
+  assignees, 
+  updateTodo, 
+  addComment, 
+  updateComment, 
+  deleteComment, 
+  closeTodo, 
+  reopenTodo 
+}) => {
   const [comment, setComment] = useState('')
   const [isEditingTitle, setIsEditingTitle] = useState(false)
   const [isEditingDescription, setIsEditingDescription] = useState(false)

@@ -1,4 +1,3 @@
-import { useTodo } from '../hooks/useTodo'
 import TodoCard from './TodoCard'
 import { Plus } from 'lucide-react'
 
@@ -10,9 +9,11 @@ const KanbanColumn = ({
   columnId, 
   onAddItem, 
   onEdit, 
-  onViewDetails 
+  onViewDetails,
+  moveTodo,
+  deleteTodo,
+  assignees
 }) => {
-  const { moveTodo } = useTodo()
 
   const handleDragOver = (e) => {
     e.preventDefault()
@@ -58,6 +59,8 @@ const KanbanColumn = ({
               todo={todo} 
               onEdit={onEdit}
               onViewDetails={onViewDetails}
+              deleteTodo={deleteTodo}
+              assignees={assignees}
             />
           ))}
           {todos.length === 0 && (

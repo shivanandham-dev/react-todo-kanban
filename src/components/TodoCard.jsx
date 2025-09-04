@@ -1,10 +1,8 @@
 import React, { useState } from 'react'
 import { MoreHorizontal, MessageCircle, User } from 'lucide-react'
-import { useTodo } from '../hooks/useTodo'
 import PriorityBadge from './ui/PriorityBadge'
 
-const TodoCard = ({ todo, onEdit, onViewDetails }) => {
-  const { assignees, deleteTodo } = useTodo()
+const TodoCard = ({ todo, onEdit, onViewDetails, deleteTodo, assignees }) => {
   const [showDropdown, setShowDropdown] = useState(false)
 
   const assignee = assignees.find(a => a.id === todo.assigneeId)

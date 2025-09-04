@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { useTodo } from '../hooks/useTodo'
 import { PRIORITY_OPTIONS, STATUS_OPTIONS } from '../types/index.js'
 import Modal from './ui/Modal'
 import Input from './ui/Input'
@@ -12,9 +11,11 @@ const TodoFormModal = ({
   mode = 'add', // 'add' or 'edit'
   todo = null, // Required for edit mode
   defaultStatus = 'no-status',
-  onSuccess 
+  onSuccess,
+  addTodo,
+  updateTodo,
+  assignees
 }) => {
-  const { addTodo, updateTodo, assignees } = useTodo()
   const [formData, setFormData] = useState({
     title: '',
     description: '',

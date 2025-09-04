@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { Plus } from 'lucide-react'
-import { useTodo } from '../hooks/useTodo'
 import { useSearch } from '../hooks/useSearch.js'
 import { COLUMN_CONFIG } from '../types/index.js'
 import KanbanColumn from './KanbanColumn'
@@ -8,8 +7,20 @@ import TodoFormModal from './TodoFormModal'
 import TaskDescriptionModal from './TaskDescriptionModal'
 import SearchBar from './SearchBar'
 
-const KanbanBoard = () => {
-  const { todos, loading } = useTodo()
+const KanbanBoard = ({ 
+  todos, 
+  assignees, 
+  loading, 
+  addTodo, 
+  updateTodo, 
+  deleteTodo, 
+  moveTodo, 
+  closeTodo, 
+  reopenTodo, 
+  addComment, 
+  updateComment, 
+  deleteComment 
+}) => {
   const { searchTerm, filteredItems, updateSearchTerm } = useSearch(todos)
   
   const [showFormModal, setShowFormModal] = useState(false)
@@ -95,6 +106,9 @@ const KanbanBoard = () => {
             onAddItem={handleAddItem}
             onEdit={handleEditTodo}
             onViewDetails={handleViewDetails}
+            moveTodo={moveTodo}
+            deleteTodo={deleteTodo}
+            assignees={assignees}
           />
         ))}
       </div>
@@ -107,6 +121,9 @@ const KanbanBoard = () => {
           todo={formModalMode === 'edit' ? selectedTodo : null}
           defaultStatus={addToColumn}
           onSuccess={() => setShowFormModal(false)}
+          addTodo={addTodo}
+          updateTodo={updateTodo}
+          assignees={assignees}
         />
       )}
 
@@ -115,6 +132,13 @@ const KanbanBoard = () => {
           todo={selectedTodo}
           onClose={handleTaskModalClose}
           onUpdate={handleTaskModalUpdate}
+          assignees={assignees}
+          updateTodo={updateTodo}
+          addComment={addComment}
+          updateComment={updateComment}
+          deleteComment={deleteComment}
+          closeTodo={closeTodo}
+          reopenTodo={reopenTodo}
         />
       )}
     </div>
