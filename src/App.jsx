@@ -1,16 +1,21 @@
 import './App.css'
 import KanbanBoard from './components/KanbanBoard'
-import { TodoProvider } from './context/TodoContext.jsx'
+import { useTodoStore } from './stores/todoStore.js'
+import { useEffect } from 'react'
 
 function App() {
+  const initializeStore = useTodoStore((state) => state.initializeStore)
+
+  useEffect(() => {
+    initializeStore()
+  }, [initializeStore])
+
   return (
-    <TodoProvider>
-      <div className="app">
-        <main>
-          <KanbanBoard />
-        </main>
-      </div>
-    </TodoProvider>
+    <div className="app">
+      <main>
+        <KanbanBoard />
+      </main>
+    </div>
   )
 }
 
